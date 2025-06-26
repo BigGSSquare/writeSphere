@@ -1,18 +1,30 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
+import instance from "../api/axios";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../features/auth/authSlice";
+import toast from "react-hot-toast";
 const SignUp = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // later: connect to backend
+  const onSubmit = async (data) => {
+    try {
+      console.log(data);
+      const res = await instance.post("/v1/user/register", data, {
+        withCredentials: true,
+      });
+      toast.success("registered successfully");
+      navigate("/login");
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
   return (

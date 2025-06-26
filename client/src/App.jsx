@@ -6,9 +6,11 @@ import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Navbar from "./components/Navbar.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 const App = () => {
   return (
     <div>
+      <Toaster position="bottom-right" reverseOrder="false" />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

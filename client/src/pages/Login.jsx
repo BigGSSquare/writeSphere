@@ -2,8 +2,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import instance from "../api/axios"; // Make sure your axios instance is setup
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../features/auth/authSlice";
+import toast from "react-hot-toast";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -13,11 +17,16 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await instance.post("/auth/login", data);
-      alert(res.data.message);
+      const res = await instance.post(
+        "http://localhost:3000/api/v1/user/login",
+        data,
+        { withCredentials: true }
+      );
+      dispatch(loginSuccess(res.data.user));
+      toast.success("Logged in successfully");
       navigate("/");
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      toast.error("login failed!");
     }
   };
 
