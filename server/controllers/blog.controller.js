@@ -8,6 +8,7 @@ export const createBlog = async (req, res) => {
         message: "all fields are required",
       });
     }
+    const thumbnail = req.file.path;
     const author = req.user.id;
     console.log(author);
     const newBlog = await blogModel.create({
@@ -15,6 +16,7 @@ export const createBlog = async (req, res) => {
       subtitle,
       content,
       author,
+      thumbnail,
     });
     res.status(201).json({
       success: true,

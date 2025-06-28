@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -41,6 +42,9 @@ const Navbar = () => {
             {isAuthenticated && user && (
               <span className="text-[#eed2d1]">Welcome, {user.firstname}</span>
             )}
+            <Link to="/create" className="text-[#eed2d1] hover:text-[#a55050]">
+              Write
+            </Link>
 
             <button
               onClick={() => {

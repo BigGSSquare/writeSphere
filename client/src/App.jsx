@@ -5,6 +5,7 @@ import About from "./pages/About";
 import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Navbar from "./components/Navbar.jsx";
+import CreateBlog from "./pages/Write.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/About" element={<About />}></Route>
         <Route path="/Login" element={<Login />}></Route>
         <Route path="/SignUp" element={<SignUp />}></Route>
+        <Route path="/create" element={<CreateBlog />} />
       </Routes>
     </div>
   );

@@ -5,9 +5,11 @@ import { getAllBlogs } from "../controllers/blog.controller.js";
 import { getBlogWithId } from "../controllers/blog.controller.js";
 import { updateBlog } from "../controllers/blog.controller.js";
 import { deleteBlog } from "../controllers/blog.controller.js";
+import upload from "../middlewares/multer.js";
+
 const blogRouter = express.Router();
 
-blogRouter.post("/create", verifyToken, createBlog);
+blogRouter.post("/create", verifyToken, upload.single("thumbnail"), createBlog);
 blogRouter.get("/", getAllBlogs);
 blogRouter.get("/:id", getBlogWithId);
 blogRouter.put("/:id", updateBlog);
