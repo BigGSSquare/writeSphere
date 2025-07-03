@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-import instance from "../api/axios"; // Make sure your axios instance is setup
+import instance from "../api/axios";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../features/auth/authSlice";
 import toast from "react-hot-toast";
@@ -22,9 +22,13 @@ const Login = () => {
         data,
         { withCredentials: true }
       );
-      dispatch(loginSuccess(res.data.user));
-      toast.success("Logged in successfully");
-      navigate("/");
+      if (res.data.success == true) {
+        dispatch(loginSuccess(res.data.user));
+        toast.success("Logged in successfully");
+        navigate("/");
+      } else {
+        toast.error("Logged out successfully");
+      }
     } catch (err) {
       toast.error("login failed!");
     }

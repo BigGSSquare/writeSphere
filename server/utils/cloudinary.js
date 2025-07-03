@@ -1,4 +1,3 @@
-// utils/cloudinary.js
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import dotenv from "dotenv";
@@ -18,4 +17,4 @@ const storage = new CloudinaryStorage({
   },
 });
 
-export { cloudinary, storage }; // ✅ named export
+export { cloudinary, storage }; 

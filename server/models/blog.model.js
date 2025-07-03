@@ -21,6 +21,9 @@ const blogSchema = new mongoose.Schema(
     thumbnail: {
       type: String,
     },
+    category:{
+      type:String,
+    }
   },
   { timestamps: true }
 );

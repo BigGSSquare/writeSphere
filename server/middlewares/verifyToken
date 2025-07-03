@@ -1,8 +1,9 @@
 // middleware/verifyToken.js
 import jwt from "jsonwebtoken";
+import { User } from "../models/user.model.js";
 
-export const verifyToken = (req, res, next) => {
-  const token = req.cookies.token; // token name must match what you set in controller
+export const verifyToken = async (req, res, next) => {
+  const token = req.cookies.token;
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: No token" });
@@ -10,12 +11,18 @@ export const verifyToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.USER_SECRET_KEY);
-    req.user = decoded;
-    console.log("Token from cookie:", req.user);
-    console.log("Decoded user:", decoded);
 
+    // Fetch user from DB
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    req.user = user;
+    console.log("User attached to req.user:", req.user);
     next();
   } catch (err) {
+    console.error("JWT verification failed:", err.message);
     return res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 };

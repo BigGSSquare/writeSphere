@@ -16,16 +16,12 @@ export const register = async (req, res) => {
         message: "All fields are required",
       });
     }
-
-    // Password length check
     if (password.length < 8) {
       return res.status(400).json({
         success: false,
         message: "Password must be at least 8 characters long",
       });
     }
-
-    // Basic email format check
     const emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
     if (!emailRegex.test(username)) {
       return res.status(400).json({
@@ -91,12 +87,8 @@ export const login = async (req, res) => {
       });
     }
 
-    // Compare password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    // Remove password logging for security
-    console.log("Login attempt for user:", username);
-    console.log("Password match:", isPasswordValid);
 
     if (!isPasswordValid) {
       return res.status(401).json({
