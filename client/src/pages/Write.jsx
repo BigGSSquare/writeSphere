@@ -1,96 +1,184 @@
+import { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useForm } from "react-hook-form";
 import React from "react";
-import instance from "../api/axios";
-import toast from "react-hot-toast";
 import TiptapEditor from "../components/tiptap";
+import instance from "../api/axios";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { addBlog } from "../features/blog/blogSlice";
+import { useDispatch } from "react-redux";
 const Write = () => {
-  const editor = useEditor({
-    extensions: [StarterKit],
-    content: "",
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const blogSchema = z.object({
+    title: z.string().min(1, "title is required"),
+    subtitle: z.string().min(1, "subtitle is required"),
+    content: z.string().min(1, "content is required"),
+    thumbnail: z.any(),
   });
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    control,
+    formState: { errors, isSubmitting },
     watch,
-  } = useForm();
-  const onSubmit = async (data) => {
+  } = useForm({
+    resolver: zodResolver(blogSchema),
+    defaultValues: {
+      title: "",
+      subtitle: "",
+      content: "",
+      thumbnail: null,
+    },
+  });
+  const watchThumbnail = watch("thumbnail");
+
+  const onsubmit = async (data) => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("subtitle", data.subtitle);
-    formData.append("content", editor.getHTML());
+    formData.append("content", data.content);
     formData.append("thumbnail", data.thumbnail[0]);
     try {
-      await instance.post("/v1/blog/create", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
-      toast.success("Blog created successfully!");
-    } catch (error) {
-      console.error(error);
-      toast.error(error.message || "Failed to create blog");
+      const res = await dispatch(addBlog(formData)).unwrap();
+      toast.success("blog created successfully");
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
     }
   };
 
   return (
-    <div className="bg-[#090b0a]">
-      <div className="max-w-3xl mx-auto px-4 py-10">
-        <h2 className="text-4xl font-extrabold text-center text-[#a55050] mb-10">
-          Write Your Blog
-        </h2>
+    <form onSubmit={handleSubmit(onsubmit)}>
+      <div className="min-h-screen bg-[#090b0a] py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-4xl font-extrabold text-center text-[#a55050] mb-10">
+            Write Your Blog
+          </h2>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          encType="multipart/form-data"
-          className="space-y-8 bg-white p-8 rounded-xl shadow-md"
-        >
-          <input
-            type="text"
-            placeholder="Title"
-            {...register("title", { required: true })}
-            className="w-full p-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a55050]"
-          />
-          <input
-            type="text"
-            placeholder="Subtitle"
-            {...register("subtitle", { required: true })}
-            className="w-full p-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a55050]"
-          />
-          <div className="border border-[#eed2d1] rounded-b-lg min-h-[400px] p-4 bg-white">
-            <EditorContent editor={editor} />
-          </div>
-
-          <div className="border border-dashed border-[#a55050] rounded-lg p-6 text-center">
-            <label className="block cursor-pointer">
-              <span className="bg-[#eed2d1] text-[#a55050] px-4 py-2 rounded-md font-medium">
-                Choose Thumbnail
-              </span>
+          <div className="space-y-6 bg-black text-white p-8 rounded-xl shadow-lg">
+            {/* Title Input */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-300">
+                Title
+              </label>
               <input
-                type="file"
-                accept="image/*"
-                {...register("thumbnail", { required: true })}
-                className="hidden"
+                type="text"
+                placeholder="Enter your blog title..."
+                {...register("title")}
+                className="w-full p-4 text-lg border border-gray-600 bg-[#121212] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a55050] focus:border-transparent transition-all duration-200 placeholder-gray-400"
               />
-            </label>
-            {watch("thumbnail")?.[0]?.name && (
-              <p className="mt-2 text-sm text-gray-700">
-                {watch("thumbnail")[0].name}
-              </p>
-            )}
-          </div>
+              {errors.title && (
+                <p className="text-red-400 text-sm">{errors.title}</p>
+              )}
+            </div>
 
-          <button
-            type="submit"
-            disabled={!editor}
-            className="w-full bg-[#eed2d1] text-[#b08f8f] py-3 rounded-lg text-lg font-semibold hover:bg-[#a55050] transition duration-200"
-          >
-            Publish Blog
-          </button>
-        </form>
+            {/* Subtitle Input */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-300">
+                Subtitle
+              </label>
+              <input
+                type="text"
+                placeholder="Enter your blog subtitle..."
+                {...register("subtitle")}
+                className="w-full p-4 text-lg border border-gray-600 bg-[#121212] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a55050] focus:border-transparent transition-all duration-200 placeholder-gray-400"
+              />
+              {errors.subtitle && (
+                <p className="text-red-400 text-sm">{errors.subtitle}</p>
+              )}
+            </div>
+
+            {/* Content Editor */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-300">
+                Content
+              </label>
+              <Controller
+                name="content"
+                control={control}
+                render={({ field }) => (
+                  <TiptapEditor
+                    onContentChange={field.onChange}
+                    content={field.value}
+                  />
+                )}
+              />
+            </div>
+
+            {/* Thumbnail Upload */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-300">
+                Thumbnail Image
+              </label>
+              <div className="mb-3 border-2 border-dashed border-[#a55050] rounded-lg p-8 text-center hover:border-[#8b4444] transition-colors duration-200">
+                <label className="block cursor-pointer">
+                  <div className="space-y-2">
+                    <div className="mb-4 inline-flex items-center justify-center w-12 h-12 bg-[#eed2d1] rounded-full">
+                      <svg
+                        className="w-6 h-6 text-[#a55050]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 4v16m8-8H4"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="bg-[#eed2d1] text-[#a55050] px-6 py-3 rounded-md font-medium hover:bg-[#e0c5c4] transition-colors duration-200">
+                        Choose Thumbnail
+                      </span>
+                      <p className="text-sm text-gray-400 mt-6">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    {...register("thumbnail")}
+                    className="hidden"
+                  />
+                </label>
+                {watchThumbnail && watchThumbnail[0] && (
+                  <div className="mt-4 p-3 bg-[#1a1a1a] rounded-lg border border-gray-600">
+                    <p className="text-sm text-gray-300 font-medium">
+                      Selected: {watchThumbnail[0].name}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {(watchThumbnail[0].size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                )}
+              </div>
+              {errors.thumbnail && (
+                <p className="text-red-400 text-sm">{errors.thumbnail}</p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-4">
+              <button
+                type="submit"
+                className="w-full bg-[#a55050] text-white py-4 rounded-lg text-lg font-semibold hover:bg-[#8b4444] disabled:bg-gray-600 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                Publish Blog
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </form>
   );
 };
 

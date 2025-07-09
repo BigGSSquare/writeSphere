@@ -13,7 +13,9 @@ const Blogs = () => {
   useEffect(() => {
     const res = async () => {
       try {
-        await dispatch(fetchAllBlogs()).unwrap();
+        if (!blogs.length) {
+          await dispatch(fetchAllBlogs());
+        }
       } catch (err) {
         toast.error(err.response?.message || "error fetching blogs");
       }

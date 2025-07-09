@@ -17,6 +17,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/blog", blogRouter);
 app.get("/", (req, res, next) => {

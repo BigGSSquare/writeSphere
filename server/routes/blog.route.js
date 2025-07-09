@@ -6,12 +6,18 @@ import { getBlogWithId } from "../controllers/blog.controller.js";
 // import { updateBlog } from "../controllers/blog.controller.js";
 // import { deleteBlog } from "../controllers/blog.controller.js";
 // import upload from "../middlewares/multer.js";
+import upload from "../middlewares/multer.js";
 
 const blogRouter = express.Router();
 
 blogRouter.get("/fetchAllBlogs", fetchAllBlogs);
-blogRouter.get("/:id", getBlogWithId);
-// blogRouter.put("/:id", updateBlog);
+blogRouter.get("/:id", verifyToken, getBlogWithId);
+blogRouter.post(
+  "/createBlog",
+  verifyToken,
+  upload.single("thumbnail"),
+  createBlog
+);
 // blogRouter.delete("/:id", verifyToken, deleteBlog);
 
 export { blogRouter };

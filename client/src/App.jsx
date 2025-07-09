@@ -9,6 +9,7 @@ import CreateBlog from "./pages/Write.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import BlogRead from "./pages/BlogRead.jsx";
+import EditBlog from "./pages/EditBlog.jsx";
 const App = () => {
   return (
     <div>
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/SignUp" element={<SignUp />}></Route>
         <Route path="/create" element={<CreateBlog />} />
         <Route path="/blog/:id" element={<BlogRead />} />
+        <Route path="/blog/edit/:id" element={<EditBlog />}></Route>
       </Routes>
     </div>
   );

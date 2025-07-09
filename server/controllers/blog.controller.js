@@ -8,15 +8,39 @@ export const fetchAllBlogs = async (req, res) => {
     success: true,
     blogs,
   });
-
-  console.log(blogs);
 };
 
-export const createBlog = () => {
-  res.send(200).json({
-    success: "true",
-    message: "idhigo veedni adugu isthadu blog",
-  });
+export const createBlog = async (req, res) => {
+  try {
+    const { title, subtitle, content } = req.body;
+    const thumbnail = req.file.path;
+    if (!title || !subtitle || !content) {
+      return res.status(500).json({
+        success: false,
+        message: "all fields are required",
+      });
+    }
+    const author = req.user?._id;
+    console.log(author);
+    const newBlog = await blogModel.create({
+      title,
+      subtitle,
+      content,
+      thumbnail,
+      author,
+    });
+    console.log(newBlog);
+    return res.status(200).json({
+      success: true,
+      message: "blog created successfully",
+      blog: newBlog,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message || err,
+    });
+  }
 };
 
 export const getBlogWithId = async (req, res) => {

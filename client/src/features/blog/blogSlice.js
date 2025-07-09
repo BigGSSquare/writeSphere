@@ -1,6 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../api/axios";
 import toast from "react-hot-toast";
+export const addBlog = createAsyncThunk(
+  "addBlog",
+  async (formData, thunkAPI) => {
+    try {
+      const res = await instance.post("/blog/createBlog", formData, {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      });
+      console.log(res);
+      console.log(res.data.blog);
+      return res.data.blog;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
 export const fetchBlogById = createAsyncThunk(
   "fetchBlogById",
   async (id, thunkAPI) => {
@@ -11,6 +29,14 @@ export const fetchBlogById = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }
+  }
+);
+export const updateBlogById = createAsyncThunk(
+  "updateBlogById",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await instance.put("/blog/updateBlogById");
+    } catch (err) {}
   }
 );
 export const fetchAllBlogs = createAsyncThunk(
@@ -27,7 +53,7 @@ export const fetchAllBlogs = createAsyncThunk(
 );
 const initialState = {
   blogs: [],
-  blogDetails: "",
+  blogDetails: null,
   loading: false,
 };
 export const blogSlice = createSlice({
@@ -50,6 +76,14 @@ export const blogSlice = createSlice({
       .addCase(fetchBlogById.fulfilled, (state, action) => {
         state.blogDetails = action.payload;
         state.loading = false;
+      })
+      .addCase(addBlog.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addBlog.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log(action.payload);
+        state.blogs.unshift(action.payload);
       });
   },
 });

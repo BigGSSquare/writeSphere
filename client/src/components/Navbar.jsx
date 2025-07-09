@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 import instance from "../api/axios";
@@ -14,37 +14,59 @@ const Navbar = () => {
 
   return (
     <nav className="shadow-md bg-[#090b0a] text-[#a55050] p-4 flex justify-between h-16 items-center">
-      <Link to="/" className="text-xl font-bold">
+      <NavLink to="/" className="text-xl font-bold">
         <h1 className="font-Inter font-extrabold tracking-tighter ml-10">
           WriteSphere
         </h1>
-      </Link>
+      </NavLink>
 
       <div className="flex items-center space-x-6 mr-10 tracking-wider">
-        <Link to="/Blogs" className="text-[#eed2d1] hover:text-[#a55050]">
+        <NavLink to="/Blogs" className="text-[#eed2d1] hover:text-[#a55050]">
           Blog
-        </Link>
-        <Link to="/About" className="text-[#eed2d1] hover:text-[#a55050]">
+        </NavLink>
+        <NavLink to="/About" className="text-[#eed2d1] hover:text-[#a55050]">
           About
-        </Link>
+        </NavLink>
 
         {!isAuthenticated ? (
           <>
-            <Link to="/login" className="text-[#eed2d1] hover:text-[#a55050]">
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-[#a55050] hover:text-[#a55050]"
+                  : "text-[#eed2d1] hover:text-[#a55050]"
+              }
+            >
               Login
-            </Link>
-            <Link to="/SignUp" className="text-[#eed2d1] hover:text-[#a55050]">
+            </NavLink>
+
+            <NavLink
+              to="/SignUp"
+              className={({ isActive }) => {
+                isActive
+                  ? "text-[#a55050] hover:text-[#a55050]"
+                  : "text-[#eed2d1] hover:text-[#a55050]";
+              }}
+            >
               Register
-            </Link>
+            </NavLink>
           </>
         ) : (
           <>
             {isAuthenticated && user && (
               <span className="text-[#eed2d1]">Welcome, {user.firstname}</span>
             )}
-            <Link to="/create" className="text-[#eed2d1] hover:text-[#a55050]">
+            <NavLink
+              to="/create"
+              className={({ isActive }) => {
+                isActive
+                  ? "text-[#a55050] hover:text-[#a55050]"
+                  : "text-[#eed2d1] hover:text-[#a55050]";
+              }}
+            >
               Write
-            </Link>
+            </NavLink>
 
             <button
               onClick={() => {
@@ -53,7 +75,11 @@ const Navbar = () => {
                 toast.success("logged out successfully");
                 navigate("/");
               }}
-              className="text-[#eed2d1] hover:text-red-400"
+              className={({ isActive }) => {
+                isActive
+                  ? "text-[#a55050] hover:text-[#a55050]"
+                  : "text-[#eed2d1] hover:text-[#a55050]";
+              }}
             >
               Logout
             </button>
