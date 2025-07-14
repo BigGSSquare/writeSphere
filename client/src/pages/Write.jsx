@@ -11,7 +11,9 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { addBlog } from "../features/blog/blogSlice";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 const Write = () => {
+  const { loading } = useSelector((state) => state.blog);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const blogSchema = z.object({
@@ -46,7 +48,7 @@ const Write = () => {
     try {
       const res = await dispatch(addBlog(formData)).unwrap();
       toast.success("blog created successfully");
-      navigate("/");
+      navigate("/blogs");
     } catch (err) {
       console.log(err);
       toast.error(err.message);
@@ -119,22 +121,7 @@ const Write = () => {
               <div className="mb-3 border-2 border-dashed border-[#a55050] rounded-lg p-8 text-center hover:border-[#8b4444] transition-colors duration-200">
                 <label className="block cursor-pointer">
                   <div className="space-y-2">
-                    <div className="mb-4 inline-flex items-center justify-center w-12 h-12 bg-[#eed2d1] rounded-full">
-                      <svg
-                        className="w-6 h-6 text-[#a55050]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4v16m8-8H4"
-                        />
-                      </svg>
-                    </div>
-                    <div>
+                    <div className="p-10">
                       <span className="bg-[#eed2d1] text-[#a55050] px-6 py-3 rounded-md font-medium hover:bg-[#e0c5c4] transition-colors duration-200">
                         Choose Thumbnail
                       </span>
@@ -167,12 +154,21 @@ const Write = () => {
             </div>
 
             {/* Submit Button */}
+
             <div className="pt-4">
               <button
                 type="submit"
                 className="w-full bg-[#a55050] text-white py-4 rounded-lg text-lg font-semibold hover:bg-[#8b4444] disabled:bg-gray-600 disabled:cursor-not-allowed transition-all duration-200 shadow-md hover:shadow-lg"
+                disabled={loading}
               >
-                Publish Blog
+                {loading ? (
+                  <div className="flex items-center justify-center gap-3">
+                    <div className="border-2 border-white border-t-transparent rounded-full w-5 h-5 animate-spin" />
+                    <span>PUBLISHING...</span>
+                  </div>
+                ) : (
+                  <span>Publish Blog</span>
+                )}
               </button>
             </div>
           </div>

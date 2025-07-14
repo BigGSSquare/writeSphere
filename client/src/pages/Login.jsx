@@ -25,7 +25,7 @@ const Login = () => {
       if (res.data.success == true) {
         dispatch(loginSuccess(res.data.user));
         toast.success("Logged in successfully");
-        navigate("/");
+        navigate("/blogs");
       } else {
         toast.error("Logged out successfully");
       }

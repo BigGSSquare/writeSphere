@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import BlogRead from "./pages/BlogRead.jsx";
 import EditBlog from "./pages/EditBlog.jsx";
+import MyBlogs from "./pages/MyBlogs.jsx";
 const App = () => {
   return (
     <div>
@@ -18,12 +19,14 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blogs" element={<Blogs />}></Route>
+        <Route path="/edit/:id" element={<EditBlog />}></Route>
         <Route path="/About" element={<About />}></Route>
         <Route path="/Login" element={<Login />}></Route>
         <Route path="/SignUp" element={<SignUp />}></Route>
         <Route path="/create" element={<CreateBlog />} />
         <Route path="/blog/:id" element={<BlogRead />} />
         <Route path="/blog/edit/:id" element={<EditBlog />}></Route>
+        <Route path="/MyBlogs" element={<MyBlogs />}></Route>
       </Routes>
     </div>
   );

@@ -8,7 +8,6 @@ import { blogRouter } from "./routes/blog.route.js";
 import cookieParser from "cookie-parser";
 const app = express();
 connectDB();
-
 app.use(
   cors({
     origin: "http://localhost:5173",

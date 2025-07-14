@@ -1,6 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../api/axios";
 import toast from "react-hot-toast";
+export const updateBlogById = createAsyncThunk(
+  "updateBlogById",
+  async ({ formData, id }, thunkAPI) => {
+    try {
+      const res = await instance.put(`/blog/updateBlog/${id}`, formData, {
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      });
+      console.log(res.data.blog);
+      return res.data.blog;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
 export const addBlog = createAsyncThunk(
   "addBlog",
   async (formData, thunkAPI) => {
@@ -10,8 +26,6 @@ export const addBlog = createAsyncThunk(
           "Content-type": "multipart/form-data",
         },
       });
-      console.log(res);
-      console.log(res.data.blog);
       return res.data.blog;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
@@ -24,19 +38,12 @@ export const fetchBlogById = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const res = await instance.get(`/blog/${id}`);
-      console.log(res.data);
       return res.data.data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.message);
+      return thunkAPI.rejectWithValue(
+        err.resopnse?.data?.message || err.message
+      );
     }
-  }
-);
-export const updateBlogById = createAsyncThunk(
-  "updateBlogById",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await instance.put("/blog/updateBlogById");
-    } catch (err) {}
   }
 );
 export const fetchAllBlogs = createAsyncThunk(
@@ -84,6 +91,23 @@ export const blogSlice = createSlice({
         state.loading = false;
         console.log(action.payload);
         state.blogs.unshift(action.payload);
+      })
+      .addCase(updateBlogById.fulfilled, (state, action) => {
+        const updatedBlog = action.payload;
+        state.loading = false;
+
+        const index = state.blogs.findIndex(
+          (blog) => blog._id === updatedBlog._id
+        );
+
+        if (index !== -1) {
+          // Blog exists → update it
+          state.blogs[index] = updatedBlog;
+        }
+      })
+
+      .addCase(updateBlogById.pending, (state, action) => {
+        state.loading = true;
       });
   },
 });

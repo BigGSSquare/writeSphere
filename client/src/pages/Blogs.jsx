@@ -13,8 +13,8 @@ const Blogs = () => {
   useEffect(() => {
     const res = async () => {
       try {
-        if (!blogs.length) {
-          await dispatch(fetchAllBlogs());
+        if (blogs.length == 0) {
+          dispatch(fetchAllBlogs());
         }
       } catch (err) {
         toast.error(err.response?.message || "error fetching blogs");

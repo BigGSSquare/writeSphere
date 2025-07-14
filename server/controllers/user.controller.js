@@ -49,10 +49,6 @@ export const register = async (req, res) => {
       lastname,
       bio,
     });
-
-    // Remove password logging for security
-    console.log("User registered successfully:", username);
-
     return res.status(201).json({
       success: true,
       message: "Account created successfully",
@@ -104,11 +100,13 @@ export const login = async (req, res) => {
     // Create user object without password
     const userResponse = {
       _id: user._id,
-      email: user.email,
+      email: user.username,
       firstname: user.firstname,
       lastname: user.lastname,
       bio: user.bio,
     };
+    console.log("this is user response");
+    console.log(userResponse);
 
     // Set token as cookie and respond
     return res
@@ -117,7 +115,7 @@ export const login = async (req, res) => {
         maxAge: 1 * 60 * 60 * 1000, // 1 hour (matches JWT expiration)
         httpOnly: true,
         sameSite: "strict",
-        secure: process.env.NODE_ENV === "production", // Use secure in production
+        secure: process.env.NODE_ENV === "production",
       })
       .json({
         success: true,

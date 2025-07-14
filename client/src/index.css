@@ -1,1 +1,6 @@
 @import "tailwindcss";
+.editorContent {
+  background-color: #121212; /* darker tone to match */
+  padding: 1rem;
+  border-radius: 0.5rem;
+}

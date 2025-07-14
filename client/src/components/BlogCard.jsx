@@ -6,7 +6,7 @@ const BlogCard = ({ _id, title, subtitle, author, thumbnail, createdAt }) => {
 
   return (
     <Link to={`/blog/${_id}`}>
-      <div className="max-w-sm rounded-2xl bg-[#dacacf] border-1  border-[#2a2a2a] transition duration-250 cursor-pointer overflow-hidden hover:scale-[1.02] will-change-transform backface-hidden">
+      <div className="max-w-sm rounded-2xl bg-[#0f0f10]/80 backdrop-blur-md transition duration-250 cursor-pointer overflow-hidden hover:scale-[1.02] will-change-transform backface-hidden">
         {thumbnail && (
           <img
             className="block w-full h-48 object-cover"

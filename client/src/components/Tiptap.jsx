@@ -132,7 +132,7 @@ const TiptapEditor = ({ onContentChange, content = "" }) => {
       >
         <EditorContent
           editor={editor}
-          className="ProseMirror outline-none text-white"
+          className="ProseMirror focus:outline-none focus:ring-0 outline-none text-white"
         />
       </div>
     </div>
