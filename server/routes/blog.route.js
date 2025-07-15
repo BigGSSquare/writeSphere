@@ -27,6 +27,6 @@ blogRouter.put(
   upload.single("thumbnail"),
   updateBlog
 );
-blogRouter.delete("/:id", verifyToken, deleteBlog);
+blogRouter.delete("/deleteBlog/:id", verifyToken, deleteBlog);
 
 export { blogRouter };

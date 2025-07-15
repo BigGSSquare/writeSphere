@@ -1,6 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../api/axios";
 import toast from "react-hot-toast";
+export const deleteBlogById = createAsyncThunk(
+  "deleteBlogById",
+  async ({ id }, thunkAPI) => {
+    try {
+      const res = await instance.delete(`/blog/deleteBlog/${id}`);
+      return { ...res.data, id };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
 export const updateBlogById = createAsyncThunk(
   "updateBlogById",
   async ({ formData, id }, thunkAPI) => {
@@ -92,6 +103,9 @@ export const blogSlice = createSlice({
         console.log(action.payload);
         state.blogs.unshift(action.payload);
       })
+      .addCase(updateBlogById.pending, (state, action) => {
+        state.loading = true;
+      })
       .addCase(updateBlogById.fulfilled, (state, action) => {
         const updatedBlog = action.payload;
         state.loading = false;
@@ -105,9 +119,17 @@ export const blogSlice = createSlice({
           state.blogs[index] = updatedBlog;
         }
       })
-
-      .addCase(updateBlogById.pending, (state, action) => {
+      .addCase(deleteBlogById.pending, (state, action) => {
         state.loading = true;
+      })
+      .addCase(deleteBlogById.fulfilled, (state, action) => {
+        const { success, id } = action.payload;
+        state.loading = false;
+        if (success) {
+          const blogs = state.blogs;
+          const newArray = blogs.filter((blogq) => blogq._id !== id);
+          state.blogs = newArray;
+        }
       });
   },
 });

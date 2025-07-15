@@ -1,11 +1,19 @@
 import MyBlogCard from "../components/MyBlogCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteBlogById } from "../features/blog/blogSlice";
+import toast from "react-hot-toast";
 
 const MyBlogs = () => {
+  const dispatch = useDispatch();
   const { blogs } = useSelector((state) => state.blog);
 
-  const handleDelete = (id) => {
-    console.log("Delete blog with ID:", id);
+  const handleDelete = async (id) => {
+    try {
+      const res = await dispatch(deleteBlogById({ id })).unwrap();
+      toast.success(res.message);
+    } catch (err) {
+      toast.error(err || "error deleting blog");
+    }
   };
 
   return (
