@@ -1,4 +1,5 @@
 import blogModel from "../models/blog.model.js";
+import querystring from "querystring";
 export const fetchAllBlogs = async (req, res) => {
   const blogs = await blogModel
     .find({})
@@ -161,6 +162,37 @@ export const deleteBlog = async (req, res) => {
     res.status(500).json({
       success: false,
       message: err.message || "error deleting blog",
+    });
+  }
+};
+export const searchBlogsController = async (req, res) => {
+  try {
+    console.log(req.query);
+    const keyword = req.query.keyword;
+    console.log(keyword);
+    const queryObject = {};
+    if (keyword) {
+      queryObject.$or = [
+        {
+          title: { $regex: keyword, $options: "i" },
+        },
+        {
+          content: { $regex: keyword, $options: "i" },
+        },
+      ];
+    }
+    console.log(queryObject);
+    const response = await blogModel.find(queryObject).sort({ createdAt: -1 });
+    console.log(response);
+    res.status(200).json({
+      success: true,
+      response,
+    });
+  } catch (err) {
+    console.error("CONTROLLER_ERROR:", err);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred on the server.",
     });
   }
 };

@@ -52,7 +52,7 @@ export const fetchBlogById = createAsyncThunk(
       return res.data.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.resopnse?.data?.message || err.message
+        err.response?.data?.message || err.message
       );
     }
   }
@@ -69,15 +69,36 @@ export const fetchAllBlogs = createAsyncThunk(
     }
   }
 );
+export const searchBlog = createAsyncThunk(
+  "searchBlog",
+  async ({ searchTerm }, thunkAPI) => {
+    try {
+      const res = await instance.get(`/blog/search?keyword=${searchTerm}`);
+      console.log(res.data);
+      return res.data.response;
+    } catch (err) {
+      console.log(err);
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
 const initialState = {
   blogs: [],
+  blogSearch: [],
+  searchActive: false,
   blogDetails: null,
   loading: false,
 };
 export const blogSlice = createSlice({
   name: "blogs",
   initialState,
-  reducers: {},
+  reducers: {
+    clearSearch: (state, action) => {
+      state.searchActive = false;
+      state.blogSearch = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllBlogs.pending, (state) => {
@@ -115,7 +136,6 @@ export const blogSlice = createSlice({
         );
 
         if (index !== -1) {
-          // Blog exists → update it
           state.blogs[index] = updatedBlog;
         }
       })
@@ -130,8 +150,17 @@ export const blogSlice = createSlice({
           const newArray = blogs.filter((blogq) => blogq._id !== id);
           state.blogs = newArray;
         }
+      })
+      .addCase(searchBlog.pending, (state, action) => {
+        state.loading = true;
+        state.searchActive = true;
+      })
+      .addCase(searchBlog.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blogSearch = action.payload;
       });
   },
 });
 
 export default blogSlice.reducer;
+export const { clearSearch } = blogSlice.actions;
