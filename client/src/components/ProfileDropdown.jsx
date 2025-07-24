@@ -8,7 +8,6 @@ import { logout } from "../features/auth/authSlice";
 import toast from "react-hot-toast";
 const ProfileDropdown = ({ user }) => {
   const navigate = useNavigate();
-  console.log(user);
   const dispatch = useDispatch();
   const handleLogout = () => {
     instance.post("http://localhost:3000/api/v1/user/logout");
@@ -18,10 +17,10 @@ const ProfileDropdown = ({ user }) => {
   };
   return (
     <Menu as="div" className="relative inline-block text-left z-50">
-      <MenuButton className="focus:outline-none">
-        {user?.profilePic ? (
+      <MenuButton className="focus:outline-none cursor-pointer">
+        {user?.photoURL ? (
           <img
-            src={user.profilePic}
+            src={user.photoURL}
             alt="Profile"
             className="w-10 h-10 rounded-full object-cover border-2 border-[#a55050] shadow-lg transition hover:scale-105"
           />

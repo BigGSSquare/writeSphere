@@ -104,6 +104,7 @@ export const login = async (req, res) => {
       firstname: user.firstname,
       lastname: user.lastname,
       bio: user.bio,
+      photoURL: user.photoURL,
     };
     console.log("this is user response");
     console.log(userResponse);
@@ -135,4 +136,44 @@ export const logout = async (_, res) => {
   return res.status(200).cookie("token", "", { maxAge: 0 }).json({
     message: "logout successfull",
   });
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { firstname, lastname, bio, user } = req.body;
+    const id = req.user._id;
+    console.log("FILE:", req.file);
+    console.log("BODY:", req.body);
+    const path = req?.file?.path;
+    console.log(path);
+    let response = await User.findByIdAndUpdate(
+      id,
+      {
+        firstname,
+        lastname,
+        bio,
+        photoURL: path,
+      },
+      { new: true }
+    );
+    const userResponse = {
+      _id: response._id,
+      email: response.username,
+      firstname: response.firstname,
+      lastname: response.lastname,
+      bio: response.bio,
+      photoURL: response.photoURL,
+    };
+    console.log(response);
+    return res.status(200).json({
+      success: true,
+      message: "blog Successfully updated",
+      userResponse,
+    });
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
 };

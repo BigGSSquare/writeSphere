@@ -11,6 +11,12 @@ import { Toaster } from "react-hot-toast";
 import BlogRead from "./pages/BlogRead.jsx";
 import EditBlog from "./pages/EditBlog.jsx";
 import MyBlogs from "./pages/MyBlogs.jsx";
+import Profile from "./pages/Profile.jsx";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+
 const App = () => {
   return (
     <div>
@@ -27,6 +33,7 @@ const App = () => {
         <Route path="/blog/:id" element={<BlogRead />} />
         <Route path="/blog/edit/:id" element={<EditBlog />}></Route>
         <Route path="/MyBlogs" element={<MyBlogs />}></Route>
+        <Route path="/profile" element={<Profile />}></Route>
       </Routes>
     </div>
   );

@@ -1,9 +1,22 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
+import instance from "../../api/axios";
 
 const initialState = {
   user: null,
   isAuthenticated: false,
 };
+export const updateUserById = createAsyncThunk(
+  "updateUserById",
+  async ({ formData }, thunkAPI) => {
+    try {
+      const res = await instance.post("/user/update", formData);
+
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
@@ -17,6 +30,16 @@ export const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateUserById.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateUserById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.userResponse;
+      });
   },
 });
 
