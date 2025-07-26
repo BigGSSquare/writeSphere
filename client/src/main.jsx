@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { store } from "./app/store.js";
 import { Provider } from "react-redux";
 import ScrollToTop from "./components/ScrolltoTop.jsx";
+import { PrimeReactProvider } from "primereact/api";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>

@@ -3,7 +3,6 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 const BlogCard = ({ _id, title, subtitle, author, thumbnail, createdAt }) => {
   const formattedDate = format(new Date(createdAt), "dd/MM/yy");
-
   return (
     <Link to={`/blog/${_id}`}>
       <div className="max-w-sm rounded-2xl bg-[#0f0f10]/80 backdrop-blur-md transition duration-250 cursor-pointer overflow-hidden hover:scale-[1.02] will-change-transform backface-hidden">
@@ -18,7 +17,7 @@ const BlogCard = ({ _id, title, subtitle, author, thumbnail, createdAt }) => {
           <h2 className="text-xl font-bold text-[#a55050] mb-1">{title}</h2>
           <p className="text-sm text-black mb-3">{subtitle}</p>
           <div className="text-sm text-[#923b3b] font-semibold">
-            By {author?.name || "Unknown Author"} | {formattedDate}
+            By {author?.firstname || "Unknown Author"} | {formattedDate}
           </div>
           <div className="mt-auto">
             <button

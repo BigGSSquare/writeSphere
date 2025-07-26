@@ -71,11 +71,13 @@ export const fetchAllBlogs = createAsyncThunk(
 );
 export const searchBlog = createAsyncThunk(
   "searchBlog",
-  async ({ searchTerm }, thunkAPI) => {
+  async ({ searchTerm, category }, thunkAPI) => {
     try {
-      const res = await instance.get(`/blog/search?keyword=${searchTerm}`);
-      console.log(res.data);
-      return res.data.response;
+      const res = await instance.get(
+        `/blog/search?keyword=${searchTerm}&category=${category}`
+      );
+      console.log(res.data.blogs);
+      return res.data.blogs;
     } catch (err) {
       console.log(err);
       return thunkAPI.rejectWithValue(err.message);
@@ -89,6 +91,7 @@ const initialState = {
   searchActive: false,
   blogDetails: null,
   loading: false,
+  category: "",
 };
 export const blogSlice = createSlice({
   name: "blogs",
@@ -97,6 +100,13 @@ export const blogSlice = createSlice({
     clearSearch: (state, action) => {
       state.searchActive = false;
       state.blogSearch = [];
+    },
+    setCategory: (state, action) => {
+      console.log(action.payload);
+      state.category = action.payload;
+    },
+    clearCategory: (state, action) => {
+      state.category = "";
     },
   },
   extraReducers: (builder) => {
@@ -163,4 +173,4 @@ export const blogSlice = createSlice({
 });
 
 export default blogSlice.reducer;
-export const { clearSearch } = blogSlice.actions;
+export const { clearSearch, setCategory, clearCategory } = blogSlice.actions;

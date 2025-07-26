@@ -13,7 +13,7 @@ export const fetchAllBlogs = async (req, res) => {
 
 export const createBlog = async (req, res) => {
   try {
-    const { title, subtitle, content } = req.body;
+    const { title, subtitle, content, category } = req.body;
     const thumbnail = req.file.path;
     if (!title || !subtitle || !content) {
       return res.status(500).json({
@@ -22,15 +22,15 @@ export const createBlog = async (req, res) => {
       });
     }
     const author = req.user?._id;
-    console.log(author);
     const newBlog = await blogModel.create({
       title,
       subtitle,
       content,
       thumbnail,
       author,
+      category,
     });
-    console.log(newBlog);
+    console.log("this is the newBlog" + newBlog);
     return res.status(200).json({
       success: true,
       message: "blog created successfully",
@@ -167,26 +167,34 @@ export const deleteBlog = async (req, res) => {
 };
 export const searchBlogsController = async (req, res) => {
   try {
-    console.log(req.query);
-    const keyword = req.query.keyword;
-    console.log(keyword);
+    const { keyword, category } = req.query;
     const queryObject = {};
-    if (keyword) {
-      queryObject.$or = [
+
+    if (keyword && category) {
+      queryObject.$and = [
+        { category: category },
         {
-          title: { $regex: keyword, $options: "i" },
-        },
-        {
-          content: { $regex: keyword, $options: "i" },
+          $or: [
+            { title: { $regex: keyword, $options: "i" } },
+            { content: { $regex: keyword, $options: "i" } },
+          ],
         },
       ];
+    } else if (keyword) {
+      queryObject.$or = [
+        { title: { $regex: keyword, $options: "i" } },
+        { content: { $regex: keyword, $options: "i" } },
+      ];
+    } else if (category) {
+      queryObject.category = category;
     }
-    console.log(queryObject);
-    const response = await blogModel.find(queryObject).sort({ createdAt: -1 });
-    console.log(response);
+
+    const blogs = await blogModel.find(queryObject).sort({ createdAt: -1 });
+
     res.status(200).json({
       success: true,
-      response,
+      count: blogs.length,
+      blogs,
     });
   } catch (err) {
     console.error("CONTROLLER_ERROR:", err);
