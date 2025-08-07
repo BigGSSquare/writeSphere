@@ -4,8 +4,9 @@ import toast from "react-hot-toast";
 import BlogCard from "../components/BlogCard";
 import BlogSkeleton from "../components/BlogSkeleton.jsx";
 import { fetchAllBlogs } from "../features/blog/blogSlice.js";
-
+import { useState } from "react";
 const Blogs = () => {
+  const [page, setPage] = useState(1);
   const { blogs, loading, blogSearch, searchActive } = useSelector(
     (state) => state.blog
   );

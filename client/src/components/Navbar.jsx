@@ -3,13 +3,13 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileDropdown from "./ProfileDropdown";
 import Searchbar from "./searchbar";
-import CategoryDropdown from "./CategoryDropdown";
+import CategoryDropdown from "./Categories";
 
 const Navbar = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   return (
-    <nav className="shadow-md bg-[#090b0a] text-[#a55050] p-4 flex justify-between h-16 items-center">
+    <nav className="shadow-md bg-[#090b0a] text-[#a55050] p-4 flex justify-between h-16 items-center w-full">
       {/* This is the container with the layout fixes */}
       <div className="flex items-center gap-4 ml-10">
         <NavLink to="/" className="text-xl font-bold">

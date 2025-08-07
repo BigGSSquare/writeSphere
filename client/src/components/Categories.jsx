@@ -22,10 +22,10 @@ const CategoryDropdown = () => {
   };
 
   return (
-    <div className="relative inline-block text-left">
+    <div className="relative inline-block text-left z-30">
       <Menu>
         {/* The MenuButton is styled to exactly match the Searchbar's appearance */}
-        <MenuButton className="flex h-full items-center gap-2 border border-[#a55050] rounded-md w-full max-w-md px-4 py-2.5 shadow-sm bg-black text-sm font-medium text-gray-400 hover:border-red-400 transition-colors">
+        <MenuButton className="flex h-full items-center gap-2 border border-[#a55050] rounded-md w-full max-w-md px-4 py-2.5  shadow-sm bg-black text-sm font-medium text-gray-400 hover:border-red-400 transition-colors">
           <span className="flex-1 text-left">{category || "Category"}</span>
           <svg
             className="h-5 w-5 text-[#a55050]"

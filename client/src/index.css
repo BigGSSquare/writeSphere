@@ -4,3 +4,11 @@
   padding: 1rem;
   border-radius: 0.5rem;
 }
+
+@font-face {
+  font-family: alter;
+  src: url("../src/assets/fonts/Inter_18pt-Regular.ttf");
+}
+@theme {
+  --font-alter: alter, "sans-serif";
+}
