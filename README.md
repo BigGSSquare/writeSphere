@@ -64,7 +64,7 @@ WriteSphere is a full-featured blogging platform built with the MERN stack (Mong
 ---
 
 ### 1. Clone the Repository
-git clone [https://github.com/your-username/blogsphere.git](https://github.com/your-username/blogsphere.git)
+git clone [https://github.com/BigGSSquare/blogsphere.git](https://github.com/BigGSSquare/blogsphere.git)
 cd blogsphere
 
 ###2. Backend Setup
